@@ -14,7 +14,9 @@ public class working_step1 {
 
     public static void main(String[] args) {
         try {
-            String targetPath = "C:\\Users\\Berry\\Desktop\\aaa";
+            String targetPath = "C:\\Users\\Berry\\Desktop\\裁决书文档";
+          //  String targetPath = "C:\\Users\\Berry\\Desktop\\aaa";
+
             //解析zip包
 
 
@@ -42,7 +44,6 @@ public class working_step1 {
                         if (body.startsWith("<body")) {
                             judgment.setTitle(body.substring(body.indexOf(">", 1) + 1, body.lastIndexOf("<")));
                         } else {
-                            System.out.println(body);
                             judgment = DocUtil.analysisJudgment(judgment, body);
                             accusedList = DocUtil.analysisAccused(body);
 
