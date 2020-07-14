@@ -123,35 +123,42 @@ public class DocUtil {
 
         if (!arr[2].contains("刑 事 判 决")){
             //标题
-            title = arr[0].substring(arr[0].lastIndexOf("'>") + 2);
+            title = arr[0].substring(arr[0].lastIndexOf(">") + 1);
             ju.setTitle(title);
 
             //文书编号
-            code = arr[2].substring(arr[2].lastIndexOf("'>") + 2);
+            code = arr[2].substring(arr[2].lastIndexOf(">") + 1);
             ju.setCode(code);
 
             //公诉机关
-            branch = arr[3].substring(arr[3].lastIndexOf("'>") + 2);
+            branch = arr[3].substring(arr[3].lastIndexOf(">") + 1);
             ju.setBranch(branch);
 
         }else{
             //标题
-            title = arr[1].substring(arr[1].lastIndexOf("'>") + 2);
+            title = arr[1].substring(arr[1].lastIndexOf(">") + 1);
             ju.setTitle(title);
 
             //文书编号
-            code = arr[3].substring(arr[3].lastIndexOf("'>") + 2);
+            code = arr[3].substring(arr[3].lastIndexOf(">") + 1);
             ju.setCode(code);
 
             //公诉机关
-            branch = arr[4].substring(arr[4].lastIndexOf("'>") + 2);
+            branch = arr[4].substring(arr[4].lastIndexOf(">") + 1);
             ju.setBranch(branch);
         }
 //是否简易程序
-        if(  is_esayProcess(body)){
-            ju.setIs_easy("Y");
-        }else{
-            ju.setIs_easy("N");
+        //简易程序
+        if ((body.contains("简易程序")&&!body.contains("普通程序")) ||body.contains("转为简易程序") ){
+            ju.setIs_easy("1");
+        }
+        //普通程序
+        if (!body.contains("程序")||body.contains("转为普通程序")){
+            ju.setIs_easy("2");
+        }
+        //速裁程序
+        if (body.contains("适用速裁程序")&& (body.contains("依法适用速裁程序")||body.contains("本院适用速裁程序"))){
+            ju.setIs_easy("3");
         }
 
         return ju;
@@ -164,30 +171,31 @@ public class DocUtil {
         String name=null;
         String nextMessage=null;
         if(!arr[2].contains("刑 事 判 决")){
-            code = arr[2].substring(arr[2].lastIndexOf("'>") + 2);
+            code = arr[2].substring(arr[2].lastIndexOf(">") + 1);
         }else{
-            code = arr[3].substring(arr[3].lastIndexOf("'>") + 2);
+            code = arr[3].substring(arr[3].lastIndexOf(">") + 1);
 
         }
 
         for (int i=0;i<arr.length;i++){
-            if( is_accused( arr[i].substring(arr[i].lastIndexOf("'>") + 2)) ){
+            if( is_accused( arr[i].substring(arr[i].lastIndexOf(">") + 1)) ){
                 Accused accused=new Accused();
                 accused.setCode(code);
-                name=arr[i].substring(arr[i].lastIndexOf("'>") + 2);
+                name=arr[i].substring(arr[i].lastIndexOf(">") + 1);
                 if(name.length()>40){
                     name=name.substring(0,39);
                 }
                 accused.setName(name);
-                nextMessage=arr[i+1].substring(arr[i+1].lastIndexOf("'>") + 2);
+                nextMessage=arr[i+1].substring(arr[i+1].lastIndexOf(">") + 1);
                 //判断这个被告有辩护人
                 if(is_Lawyer(nextMessage)){
                     accused.setIsLawyer("Y");
                     accused.setLawyerName(nextMessage);
 
-                    if(nextMessage.contains("法律援助")|| nextMessage.contains("指定")){
+                    if( nextMessage.contains("法律援助")|| nextMessage.contains("指定")){
                         accused.setIsEntrust("N");
-
+                    }else{
+                        accused.setIsEntrust("Y");
                     }
 
                 }
@@ -316,23 +324,13 @@ public class DocUtil {
 
     public static boolean is_Lawyer(String message){
         boolean flag=false;
-        if(message.startsWith("辩护人")&&message.contains("律师") || message.startsWith("指定辩护人")&&message.contains("律师") ){
+        if((message.startsWith("辩护人") || message.startsWith("指定辩护人"))  &&message.contains("律师")  ){
             flag=true;
         }
         return flag;
     }
 
-    public static boolean is_esayProcess(String message){
-        boolean flag=false;
 
-
-
-        if (message.contains("简易程序")&&!message.contains("普通程序")){
-            flag=true;
-        }
-
-        return flag;
-    }
 
 
     public static boolean is_entrust(String message){

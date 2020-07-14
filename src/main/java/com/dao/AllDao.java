@@ -145,7 +145,7 @@ public class AllDao {
         try {
             // 预定义定义SQL语句
             String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment a,tu_demo_accused b where a.`code`=b.`CODE`\n" +
-                    "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y' and a.`code` in (\n" +
+                    "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y'  and a.`code` in (\n" +
                     "select  code from tu_demo_accused c GROUP BY code having count(1)=1 )";
 
             // 获取执行预定义SQL语句对象
@@ -188,7 +188,7 @@ public class AllDao {
             // 预定义定义SQL语句
             String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment a,tu_demo_accused b where a.`code`=b.`CODE`\n" +
                     "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y' and a.`code` in (\n" +
-                    "select  code from tu_demo_accused c WHERE c.IS_ENTRUST='y' and c.IS_LAWYER='y' GROUP BY code having count(1)=1 )";
+                    "select  code from tu_demo_accused c WHERE c.IS_ENTRUST IS NULL and c.IS_LAWYER='Y' GROUP BY code having count(1)=1 )";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class working_2 {
+public class working_step2 {
     public static void main(String[] args) throws SQLException {
         //需要重新判断的code集合
         AllDao dao = new AllDao();
