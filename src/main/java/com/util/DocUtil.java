@@ -286,7 +286,7 @@ public class DocUtil {
 
 
         if (message.startsWith("被告人") && (message.contains("国籍") || message.contains("护照") || message.contains("自报") || message.contains("，男")
-                || message.contains(",女") || message.contains("，男") || message.contains("，女"))) {
+                || message.contains(",女") || message.contains("，男") || message.contains("，女")||message.contains("身份证号码"))) {
             flag = true;
 
         } else if (message.startsWith("被告人") && message.indexOf("，") < message.indexOf(",") && message.indexOf("，") != -1 && message.indexOf(",") != -1) {
