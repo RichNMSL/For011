@@ -682,17 +682,8 @@ public class AllDao {
         List<Judgment> codeList = new ArrayList<Judgment>();
         try {
             // 预定义定义SQL语句
-            String sql = " SELECT distinct\n" +
-                    "\tb.fileName,\n" +
-                    "\tb.zipName,\n" +
-                    "\ta.CODE\n" +
-                    "FROM\n" +
-                    "\ttu_demo_accused_step a,\n" +
-                    "\ttu_demo_judgment_log b\n" +
-                    "WHERE\n" +
-                    "\ta.`CODE` = b.`code`\n" ;
-
-
+            String sql = "select fileName,zipName,code from  tu_demo_judgment a where a.code is not null and a.is_easy in ('2')\n" +
+                    "            ";
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -703,9 +694,9 @@ public class AllDao {
                 Judgment judgment = new Judgment();
                 judgment.setZipName(result.getString("zipName"));
                 judgment.setFileName(result.getString("fileName"));
-               // judgment.setTitle(result.getString("lawyerName"));
                 judgment.setCode(result.getString("code"));
-              //  judgment.setBranch(result.getString("id"));
+              //  judgment.setTitle(result.getString("lawyerName").trim());
+               // judgment.setBranch(result.getString("id"));
 
                 codeList.add(judgment);
             }
@@ -735,11 +726,12 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = " update tu_demo_accused_step a set a.IS_ENTRUST='N' WHERE A.ID=?  ";
+            String sql = " update tu_demo_judgment a set a.is_easy='1' where code=?   ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, code);
+
 
 
             // 执行预编译好的SQL语句

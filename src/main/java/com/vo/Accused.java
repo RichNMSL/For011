@@ -55,6 +55,9 @@ public class Accused {
         return "Accused{" +
                 "code='" + code + '\'' +
                 ", name='" + name + '\'' +
+                ", isLawyer='" + isLawyer + '\'' +
+                ", isEntrust='" + isEntrust + '\'' +
+                ", lawyerName='" + lawyerName + '\'' +
                 '}';
     }
 }

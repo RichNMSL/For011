@@ -209,6 +209,54 @@ public class DocUtil {
     }
 
 
+    public static List<Accused> analysisAccusedNew(String body) {
+        String code = null;
+        String[] arr = body.split("</div>");
+        List<Accused> accusedList = new ArrayList<Accused>();
+        String name = null;
+        String nextMessage = null;
+        if (!arr[2].contains("刑 事 判 决")) {
+            code = arr[2].substring(arr[2].lastIndexOf(">") + 1);
+        } else {
+            code = arr[3].substring(arr[3].lastIndexOf(">") + 1);
+
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+
+            if ((arr[i].substring(arr[i].lastIndexOf(">") + 1).trim().startsWith("被告人")||
+                    arr[i].substring(arr[i].lastIndexOf(">") + 1).trim().startsWith("附带民事诉讼被告人")||
+                    arr[i].substring(arr[i].lastIndexOf(">") + 1).trim().startsWith("被某某")  )&&
+                    !arr[i].substring(arr[i].lastIndexOf(">") + 1).contains("人民币") &&
+                    !arr[i].substring(arr[i].lastIndexOf(">") + 1).contains("益劳动")) {
+                Accused accused = new Accused();
+                accused.setCode(code);
+                name = arr[i].substring(arr[i].lastIndexOf(">") + 1);
+                if (name.length() > 40) {
+                    name = name.substring(0, 39);
+                }
+                accused.setName("new"+name);
+                nextMessage = arr[i + 1].substring(arr[i + 1].lastIndexOf(">") + 1);
+                //判断这个被告有辩护人
+                if (is_Lawyer(nextMessage)) {
+                    accused.setIsLawyer("Y");
+                    accused.setLawyerName(nextMessage);
+
+                    if (nextMessage.contains("法律援助") || nextMessage.contains("指定")) {
+                        accused.setIsEntrust("N");
+                    } else {
+                        accused.setIsEntrust("Y");
+                    }
+
+                }
+                accusedList.add(accused);
+            }
+        }
+
+
+        return accusedList;
+    }
+
     public static List<Accused> analysisAccusedForBackUp(String body) {
         String code = null;
         String[] arr = body.split("</div>");
@@ -377,7 +425,7 @@ public class DocUtil {
 
 
     public static void main(String[] args) {
-        String a = "被告人王召(自报)，；因涉嫌盗窃犯罪于2018年9月27日被上海市。";
+        String a = "被告人吴黔(XXXXXXXXXXXXXXXXXX)，汉族，户籍地本市四平路XXX弄XXX号XXX室；2018年10月16日因本案被上海市普陀区。";
 
         System.out.println(is_accused(a));
 
