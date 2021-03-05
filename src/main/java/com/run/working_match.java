@@ -21,28 +21,47 @@ public class working_match {
         try {
             codeList = dao.queryNeedBaoShan();
             for (Judgment judgment : codeList) {
-                List<Accused>accusedList=new ArrayList<Accused>();
 
                 File file = new File(basePath + "\\" + judgment.getZipName() + "\\" + judgment.getFileName());
                 String body = DocUtil.readFileContent(file.getPath());
                 String[] arr = body.split("</div>");
-                String name = null;
-                String flag = null;
+                int start=0;
+                int end=0;
+                for(int i=0;i<arr.length;i++){
+                    if(arr[i].contains("判决如下")){
+                        start=i+1;
+                    }
+                    if(arr[i].contains("相关法律条文")){
+                        end=i+1;
+                    }
+                }
+                int num=0;
 
-
-
-//                for (int i=0;i<arr.length;i++){
-//                    if(arr[i].contains("简易程序")&&arr[i].contains("速裁程序")&&arr[i].lastIndexOf("简易程序")<arr[i].lastIndexOf("普通程序")&&!arr[i].contains("程序处罚决定书")){
-//                        System.out.println(file.getPath());
-//                        count++;
-//                      //  dao.updatebyCodeNew(judgment.getCode());
-//                        break;
+                for(int j=start;j<end;j++){
+//                    if (arr[j].contains("有期徒刑")){
+//                        System.out.println(arr[j]);
+//
 //                    }
+
+                    //完全不包含有期徒刑
+//                    if (!arr[j].contains("有期徒刑")){
+//                        num++;
+//                    }
+                    //包含有期徒刑三年
+                    if(  arr[j].contains("十年") &&!arr[j].contains("缓刑")&&arr[j].contains(judgment.getTitle().substring(0,6).trim())){
+                        System.out.println(judgment.getTitle().replace("被告人暨附带民事公益诉讼","").substring(0,5) +arr[j]+file.getPath() ) ;
+                       // System.out.println(file.getPath());
+                    //  dao.updateyqtx(judgment.getBranch());
+                    }
+                }
+
+//                if (num==end-start){
+//                    System.out.println(file.getPath());
+//                    dao.updateyqtx(judgment.getCode());
 //                }
 
-                if(body.contains("不宜适用普通程序")){
-                   // dao.updatebyCodeNew(judgment.getCode());
-                }
+
+
             }
 
             System.out.println(count);

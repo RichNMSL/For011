@@ -503,6 +503,37 @@ public class AllDao {
 
     }
 
+    public void updateyqtx(String code) throws SQLException {
+
+        Connection connection = dataSource.getConnection();
+
+        try {
+            // 预定义定义SQL语句
+            String sql = "update tu_demo_accused a set a.yqtx='3' where a.id=? ";
+
+            // 获取执行预定义SQL语句对象
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, code);
+
+
+            // 执行预编译好的SQL语句
+            preparedStatement.executeUpdate();
+
+
+            // 释放资源：PreparedStatement
+            DButil.releaseResources(preparedStatement);
+
+            // 归还连接
+            DButil.releaseResources(connection);
+
+            // 释放资源：数据库连接池
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            DButil.releaseResources(connection);
+        }
+
+    }
     public List<Judgment> queryNeedFixCode() throws SQLException {
         Connection connection = dataSource.getConnection();
         List<Judgment> list = new ArrayList<Judgment>();
@@ -682,8 +713,7 @@ public class AllDao {
         List<Judgment> codeList = new ArrayList<Judgment>();
         try {
             // 预定义定义SQL语句
-            String sql = "select fileName,zipName,code from  tu_demo_judgment a where a.code is not null and a.is_easy in ('2')\n" +
-                    "            ";
+            String sql = "select b.fileName,b.`code`,b.zipName,a.`NAME`,a.id from tu_demo_accused a ,tu_demo_judgment b where a.`CODE`=b.`code` and a.yqtx <>'3'  ";
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -695,8 +725,8 @@ public class AllDao {
                 judgment.setZipName(result.getString("zipName"));
                 judgment.setFileName(result.getString("fileName"));
                 judgment.setCode(result.getString("code"));
-              //  judgment.setTitle(result.getString("lawyerName").trim());
-               // judgment.setBranch(result.getString("id"));
+                 judgment.setTitle(result.getString("name").trim());
+                judgment.setBranch(result.getString("id"));
 
                 codeList.add(judgment);
             }

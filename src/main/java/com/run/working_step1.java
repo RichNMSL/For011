@@ -14,7 +14,7 @@ public class working_step1 {
 
     public static void main(String[] args) {
         try {
-            String targetPath = "C:\\Users\\Berry\\Desktop\\裁决书文档";
+            String targetPath = "C:\\Users\\Berry\\Desktop\\裁决书文档\\1月";
           //  String targetPath = "C:\\Users\\Berry\\Desktop\\aaa";
 
             //解析zip包
