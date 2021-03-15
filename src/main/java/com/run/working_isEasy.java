@@ -16,7 +16,7 @@ public class working_isEasy {
         AllDao dao = new AllDao();
         List<Judgment> codeList = new ArrayList<Judgment>();
         codeList = dao.queryNeedBaoShan();
-        String basePath = "C:\\Users\\Berry\\Desktop\\裁决书文档";
+        String basePath = "C:\\Users\\Berry\\Desktop\\2017";
 
 
 

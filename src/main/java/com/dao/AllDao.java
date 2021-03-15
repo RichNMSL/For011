@@ -24,7 +24,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "INSERT INTO tu_demo_judgment(zipName,fileName,title,branch,code,is_easy)  VALUES (?,?,?,?,?,?);";
+            String sql = "INSERT INTO tu_demo_judgment_2017 (zipName,fileName,title,branch,code,is_easy)  VALUES (?,?,?,?,?,?);";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -63,7 +63,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "INSERT INTO tu_demo_accused(code,name ,IS_LAWYER,IS_ENTRUST,lawyerName)  VALUES (?,?,?,?,?);";
+            String sql = "INSERT INTO tu_demo_accused_2017 (code,name ,IS_LAWYER,IS_ENTRUST,lawyerName)  VALUES (?,?,?,?,?);";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -144,9 +144,49 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment a,tu_demo_accused b where a.`code`=b.`CODE`\n" +
+            String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment_2017 a,tu_demo_accused_2017 b where a.`code`=b.`CODE`\n" +
                     "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y'  and a.`code` in (\n" +
-                    "select  code from tu_demo_accused c GROUP BY code having count(1)=1 )";
+                    "select  code from tu_demo_accused_2017 c GROUP BY code having count(1)=1 )";
+
+            // 获取执行预定义SQL语句对象
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+
+            // 执行预编译好的SQL语句
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                Judgment judgment = new Judgment();
+                judgment.setCode(result.getString("code"));
+                judgment.setZipName(result.getString("zipName"));
+                judgment.setFileName(result.getString("fileName"));
+                judgment.setTitle(result.getString("lawyerName"));
+                judgment.setBranch(result.getString("id"));
+                list.add(judgment);
+            }
+
+            // 释放资源：PreparedStatement
+            DButil.releaseResources(preparedStatement);
+
+            // 归还连接
+            DButil.releaseResources(connection);
+
+            // 释放资源：数据库连接池
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            DButil.releaseResources(connection);
+        }
+        return list;
+
+    }
+    public List<Judgment> queryLawyersss() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        List<Judgment> list = new ArrayList<Judgment>();
+
+        try {
+            // 预定义定义SQL语句
+            String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment_2017 a,tu_demo_accused_2017 b where a.`code`=b.`CODE`\n" +
+                    "and trim(b.name) ='被告人'";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -180,15 +220,59 @@ public class AllDao {
 
     }
 
+
+    public List<Judgment> queryLawyersssaaa() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        List<Judgment> list = new ArrayList<Judgment>();
+
+        try {
+            // 预定义定义SQL语句
+            String sql = "select  a.code ,zipName,fileName  ,id  from tu_demo_judgment_2017_log_new  a\n" +
+                    "where branch IS NOT NULL and title NOT LIKE '人民法院认为%' and is_easy is null ";
+
+            // 获取执行预定义SQL语句对象
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+
+            // 执行预编译好的SQL语句
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                Judgment judgment = new Judgment();
+                judgment.setCode(result.getString("code"));
+                judgment.setZipName(result.getString("zipName"));
+                judgment.setFileName(result.getString("fileName"));
+                judgment.setBranch(result.getString("id"));
+                list.add(judgment);
+            }
+
+            // 释放资源：PreparedStatement
+            DButil.releaseResources(preparedStatement);
+
+            // 归还连接
+            DButil.releaseResources(connection);
+
+            // 释放资源：数据库连接池
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            DButil.releaseResources(connection);
+        }
+        return list;
+
+    }
+
     public List<Judgment> queryLawyers_2() throws SQLException {
         Connection connection = dataSource.getConnection();
         List<Judgment> list = new ArrayList<Judgment>();
 
         try {
             // 预定义定义SQL语句
-            String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment a,tu_demo_accused b where a.`code`=b.`CODE`\n" +
+            String sql = "SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment_2017 a,tu_demo_accused_2017 b where a.`code`=b.`CODE`\n" +
                     "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y' and a.`code` in (\n" +
-                    "select  code from tu_demo_accused c WHERE c.IS_ENTRUST IS NULL and c.IS_LAWYER='Y' GROUP BY code having count(1)=1 )";
+                    "select  code from tu_demo_accused_2017 c WHERE c.IS_ENTRUST ='Y' and c.IS_LAWYER='Y' GROUP BY code having count(1)=1 )"+
+                    "AND a.code  in (\n" +
+                    "select CODE  from tu_demo_accused_2017 where IS_ENTRUST ='N'\n" +
+                    ")";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -228,9 +312,9 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = " SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment a,tu_demo_accused b where a.`code`=b.`CODE`\n" +
+            String sql = " SELECT b.code,a.zipName,a.fileName ,B.lawyerName,b.id from tu_demo_judgment_2017 a,tu_demo_accused_2017 b where a.`code`=b.`CODE`\n" +
                     "and b.IS_LAWYER='Y' and b.IS_ENTRUST ='Y' and a.`code` in (\n" +
-                    "select  code from tu_demo_accused c WHERE c.IS_ENTRUST='y' and c.IS_LAWYER='y' GROUP BY code having count(1)>1 ) ";
+                    "select  code from tu_demo_accused_2017 c WHERE c.IS_ENTRUST='Y' and c.IS_LAWYER='Y' GROUP BY code having count(1)>1 ) ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -269,7 +353,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "update tu_demo_accused a set a.IS_ENTRUST=null where id=?  ";
+            String sql = "update tu_demo_accused_2017 a set a.is_lawyer='Y',IS_ENTRUST='N' where id=?  ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -301,7 +385,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "update tu_demo_accused_step a set a.IS_ENTRUST=null where id=?  ";
+            String sql = "update tu_demo_accused_2017_log a set a.IS_ENTRUST='N' where id=?  ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -334,7 +418,39 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "update tu_demo_accused_step a set a.IS_ENTRUST='Y' where id=?  ";
+            String sql = "update tu_demo_accused_2017_log a set a.IS_ENTRUST='Y' where id=?  ";
+
+            // 获取执行预定义SQL语句对象
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, id);
+
+
+            // 执行预编译好的SQL语句
+            preparedStatement.executeUpdate();
+
+
+            // 释放资源：PreparedStatement
+            DButil.releaseResources(preparedStatement);
+
+            // 归还连接
+            DButil.releaseResources(connection);
+
+            // 释放资源：数据库连接池
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            DButil.releaseResources(connection);
+        }
+
+    }
+
+    public void updateByidYAA(String id) throws SQLException {
+        Connection connection = dataSource.getConnection();
+        List<Judgment> list = new ArrayList<Judgment>();
+
+        try {
+            // 预定义定义SQL语句
+            String sql = "UPDATE tu_demo_judgment_2017_log_new SET is_easy='3' WHERE ID=?  ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -366,7 +482,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "update tu_demo_accused a set a.IS_ENTRUST='wait' where id=?  ";
+            String sql = "update tu_demo_accused_2017 a set a.IS_ENTRUST='wait' where id=?  ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -399,8 +515,8 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "select distinct b.code,b.zipName,b.fileName,a.lawyerName,A.ID from tu_demo_accused_step a LEFT JOIN tu_demo_judgment_log B  ON  A.`CODE`=B.`code` \n" +
-                    "WHERE  a.IS_ENTRUST='wait'   ";
+            String sql = "select distinct  b.code,b.zipName,b.fileName,a.lawyerName,A.ID from tu_demo_accused_2017_log a LEFT JOIN tu_demo_judgment_2017_log B  ON  A.`CODE`=B.`code`\n" +
+                    "   WHERE  a.IS_ENTRUST='wait'   ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -413,7 +529,7 @@ public class AllDao {
                 judgment.setCode(result.getString("code"));
                 judgment.setZipName(result.getString("zipName"));
                 judgment.setFileName(result.getString("fileName"));
-                judgment.setTitle(result.getString("lawyerName"));
+                judgment.setTitle(result.getString("lawyerName").trim());
                 judgment.setBranch(result.getString("id"));
 
                 list.add(judgment);
@@ -441,7 +557,7 @@ public class AllDao {
         int count = 0;
         try {
             // 预定义定义SQL语句
-            String sql = "select count(1) as con from tu_demo_accused_step a where  a.IS_ENTRUST is null and  a.IS_LAWYER ='Y' and  a.`CODE`=?  ";
+            String sql = "select count(1) as con from tu_demo_accused_2017_log a where  a.IS_ENTRUST ='N' and  a.IS_LAWYER ='Y' and  a.`CODE`=?  ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -477,7 +593,7 @@ public class AllDao {
 
         try {
             // 预定义定义SQL语句
-            String sql = "update tu_demo_accused_step a set a.IS_ENTRUST='Y' where code=? and a.IS_ENTRUST='wait' ";
+            String sql = "update tu_demo_accused_2017_log a set a.IS_ENTRUST='Y' where code=? and a.IS_ENTRUST='wait' ";
 
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -713,7 +829,7 @@ public class AllDao {
         List<Judgment> codeList = new ArrayList<Judgment>();
         try {
             // 预定义定义SQL语句
-            String sql = "select b.fileName,b.`code`,b.zipName,a.`NAME`,a.id from tu_demo_accused a ,tu_demo_judgment b where a.`CODE`=b.`code` and a.yqtx <>'3'  ";
+            String sql = "select b.fileName,b.`code`,b.zipName,a.`NAME`,a.id from tu_demo_accused_2017 a ,tu_demo_judgment_2017 b where a.`CODE`=b.`code`   ";
             // 获取执行预定义SQL语句对象
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 

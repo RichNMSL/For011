@@ -14,7 +14,7 @@ public class working_step1 {
 
     public static void main(String[] args) {
         try {
-            String targetPath = "C:\\Users\\Berry\\Desktop\\裁决书文档\\1月";
+            String targetPath = "C:\\Users\\Berry\\Desktop\\2017";
           //  String targetPath = "C:\\Users\\Berry\\Desktop\\aaa";
 
             //解析zip包
@@ -67,7 +67,7 @@ public class working_step1 {
                 }
 
             }
-            /////////////////////1
+//            /////////////////////1
             List<Judgment>need_compare=new ArrayList<Judgment>();
             need_compare=dao.queryLawyers( );
             for (Judgment judgment : need_compare){
@@ -76,9 +76,10 @@ public class working_step1 {
                 if(body.contains("法律援助")){
                     //更新为非委托
                     dao.updateByid(judgment.getBranch());
+                   // System.out.println(judgment.getBranch());
                 }
             }
-            //////////////////////2
+//            //////////////////////2
 //            List<Judgment>need_compare_2=new ArrayList<Judgment>();
 //            need_compare_2=dao.queryLawyers_2( );
 //            for (Judgment judgment : need_compare_2){
@@ -86,13 +87,14 @@ public class working_step1 {
 //                String body = DocUtil.readFileContent(file.getPath());
 //                if(body.contains("法律援助")){
 //                    //更新为非委托
-//                    dao.updateByid(judgment.getBranch());
+//                   dao.updateByid(judgment.getBranch());
+//                   //System.out.println(judgment.getBranch());
 //                }
 //            }
-
-
 //
-//            //////////////////3
+//
+////
+////            //////////////////3
 //            List<Judgment>need_compare_new=new ArrayList<Judgment>();
 //            need_compare_new=dao.queryLawyers_new( );
 //
@@ -105,7 +107,20 @@ public class working_step1 {
 //
 //                }
 //            }
+//
+//             //////////////////4
+            List<Judgment>need_compare_new_re=new ArrayList<Judgment>();
+            need_compare_new_re=dao.queryLawyers_2( );
 
+            for (Judgment judgment : need_compare_new_re){
+                File file =new File(targetPath +"\\"+judgment.getZipName()+"\\"+judgment.getFileName());
+                String body = DocUtil.readFileContent(file.getPath());
+                if(body.contains("法律援助")){
+                    //需人工判断
+                    dao.updateByidLoss(judgment.getBranch());
+
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

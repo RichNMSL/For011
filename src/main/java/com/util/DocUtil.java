@@ -132,6 +132,9 @@ public class DocUtil {
 
             //公诉机关
             branch = arr[3].substring(arr[3].lastIndexOf(">") + 1);
+            if(branch.length()>50){
+                branch=null;
+            };
             ju.setBranch(branch);
 
         } else {
@@ -191,6 +194,9 @@ public class DocUtil {
                 //判断这个被告有辩护人
                 if (is_Lawyer(nextMessage)) {
                     accused.setIsLawyer("Y");
+                    if(nextMessage.length()>80){
+                        nextMessage=nextMessage.substring(0,79);
+                    }
                     accused.setLawyerName(nextMessage);
 
                     if (nextMessage.contains("法律援助") || nextMessage.contains("指定")) {
@@ -333,11 +339,11 @@ public class DocUtil {
         message = message.trim();
 
 
-        if (message.startsWith("被告人") && (message.contains("国籍") || message.contains("护照") || message.contains("自报") || message.contains("，男")
+        if ( (message.startsWith("被告人") ||message.startsWith("被某某")) && (message.contains("国籍") || message.contains("护照") || message.contains("自报") || message.contains("，男")
                 || message.contains(",女") || message.contains("，男") || message.contains("，女")||message.contains("身份证号码"))) {
             flag = true;
 
-        } else if (message.startsWith("被告人") && message.indexOf("，") < message.indexOf(",") && message.indexOf("，") != -1 && message.indexOf(",") != -1) {
+        } else if ((message.startsWith("被告人") ||message.startsWith("被某某")) && message.indexOf("，") < message.indexOf(",") && message.indexOf("，") != -1 && message.indexOf(",") != -1) {
             String[] arr = message.split("，");
             if (arr.length > 1 && (arr[1].startsWith("男") || arr[1].startsWith("女") || arr[1].contains("化名") || arr[1].contains("曾用名") || arr[1].contains("外号") || arr[1].contains("护照"))) {
                 flag = true;
@@ -346,7 +352,7 @@ public class DocUtil {
                 flag = true;
             }
 
-        } else if (message.startsWith("被告人") && message.indexOf(",") < message.indexOf("，") && message.indexOf(",") != -1 && message.indexOf("，") != -1) {
+        } else if ((message.startsWith("被告人") ||message.startsWith("被某某")) && message.indexOf(",") < message.indexOf("，") && message.indexOf(",") != -1 && message.indexOf("，") != -1) {
             String[] arr = message.split(",");
             if (arr.length > 1 && (arr[1].startsWith("男") || arr[1].startsWith("女") || arr[1].contains("化名") || arr[1].contains("曾用名") || arr[1].contains("外号") || arr[1].contains("护照"))) {
                 flag = true;
@@ -354,7 +360,7 @@ public class DocUtil {
             if (arr[0].length() < 8) {
                 flag = true;
             }
-        } else if (message.startsWith("被告人") && message.indexOf(",") == -1 && message.indexOf("，") > 0) {
+        } else if ((message.startsWith("被告人") ||message.startsWith("被某某"))&& message.indexOf(",") == -1 && message.indexOf("，") > 0) {
             String[] arr = message.split("，");
             if (arr.length > 1 && (arr[1].startsWith("男") || arr[1].startsWith("女") || arr[1].contains("化名") || arr[1].contains("曾用名") || arr[1].contains("外号") || arr[1].contains("护照"))) {
                 flag = true;
@@ -362,7 +368,7 @@ public class DocUtil {
             if (arr[0].length() < 8) {
                 flag = true;
             }
-        } else if (message.startsWith("被告人") && message.indexOf("，") == -1 && message.indexOf(",") > 0) {
+        } else if ((message.startsWith("被告人") ||message.startsWith("被某某")) && message.indexOf("，") == -1 && message.indexOf(",") > 0) {
             String[] arr = message.split(",");
             if (arr.length > 1 && (arr[1].startsWith("男") || arr[1].startsWith("女") || arr[1].contains("化名") || arr[1].contains("曾用名") || arr[1].contains("外号") || arr[1].contains("护照"))) {
                 flag = true;
@@ -370,7 +376,7 @@ public class DocUtil {
             if (arr[0].length() < 8) {
                 flag = true;
             }
-        } else if (message.startsWith("被告人") && message.length() < 60 && !message.contains("异议") && !message.contains("供认") && !message.contains("供述") && !message.contains("上述事实")) {
+        } else if ((message.startsWith("被告人") ||message.startsWith("被某某")) && message.length() < 60 && !message.contains("异议") && !message.contains("供认") && !message.contains("供述") && !message.contains("上述事实")) {
             flag = true;
         }
 
