@@ -19,6 +19,48 @@ public class AllDao {
     private static DataSource dataSource = DButil.getDataSource();
 
 
+    public static void insertxuhui(String task_name,String source_datasource_name,String target_datasource_name,String  status,String description,String period,String dispatch_interval
+                                   ) throws SQLException {
+        Connection connection = dataSource.getConnection();
+
+        try {
+            // 预定义定义SQL语句
+            String sql = "INSERT INTO tu_demo_xuhui (task_name,source_datasource_name,target_datasource_name,status,description,period,dispatch_interval)  VALUES (?,?,?,?,?,?,?);";
+
+            // 获取执行预定义SQL语句对象
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // 给?赋值
+            preparedStatement.setString(1, task_name);
+            preparedStatement.setString(2, source_datasource_name);
+            preparedStatement.setString(3, target_datasource_name);
+            preparedStatement.setString(4, status);
+            preparedStatement.setString(5, description);
+            preparedStatement.setString(6, period);
+            preparedStatement.setString(7, dispatch_interval);
+
+            // 执行预编译好的SQL语句
+            preparedStatement.executeUpdate();
+
+            // 释放资源：PreparedStatement
+            DButil.releaseResources(preparedStatement);
+
+            // 归还连接
+            DButil.releaseResources(connection);
+
+            // 释放资源：数据库连接池
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(task_name);
+            DButil.releaseResources(connection);
+
+        } finally {
+
+        }
+    }
+
+
     public static void insertJudgment(Judgment judgment) throws SQLException {
         Connection connection = dataSource.getConnection();
 

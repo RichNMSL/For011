@@ -17,6 +17,8 @@ public class working_match {
         String basePath = "C:\\Users\\Berry\\Desktop\\裁决书文档";
         int count = 0;
         int count1 = 0;
+        List<String>list=new ArrayList<String>();
+
 
         try {
             codeList = dao.queryNeedBaoShan();
